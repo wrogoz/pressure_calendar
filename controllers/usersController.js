@@ -1,6 +1,23 @@
 const db = require("../db/db_config");
 var bcrypt = require('bcryptjs');
 
+
+const showAllUsers = (req,res)=>{
+    
+  const sql = "SELECT * FROM users ";
+  db.query(sql, (err, result) => {
+    if (err) throw err;
+    if(result.length===0){
+
+        res.send('no user found')
+    }else{
+
+        res.send(result);
+    }
+
+  });
+}
+
 const registerUser = async(req,res)=>{
     try {
         const {email,password}= req.body;
@@ -37,4 +54,4 @@ const registerUser = async(req,res)=>{
 
 }
 
-module.exports=registerUser;
+module.exports={registerUser,showAllUsers};
