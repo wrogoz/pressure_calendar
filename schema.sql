@@ -34,7 +34,7 @@ CREATE TABLE medical_data (
     diastolic_pressure INT NOT NULL,
     pulse INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT NOW(),
-    users_id INT NOT NULL,
+    user_id INT NOT NULL,
     FOREIGN KEY (users_id) REFERENCES users(id)
 );
 
