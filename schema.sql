@@ -37,5 +37,17 @@ CREATE TABLE medical_data (
     user_id INT NOT NULL,
     FOREIGN KEY (users_id) REFERENCES users(id)
 );
+SELECT * FROM users;
+SELECT * from addresses;
+SELECT * FROM medical_data;
+SELECT * FROM users_data;
 
-
+SELECT * FROM users
+JOIN addresses 
+	ON users.id=addresses.user_id
+    JOIN users_data
+		ON users.id=users_data.user_id
+       LEFT JOIN medical_data
+        ON users.id=medical_data.user_id;
+SELECT * FROM medical_data;
+DELETE  FROM users WHERE email='wrogoz@gmail.com';

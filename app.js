@@ -1,15 +1,25 @@
 const express = require("express");
 require("dotenv").config();
-const db = require("./db/db_config");
+require("./db/db_config");
 
 const auth = require("./middlewares/auth");
-const {registerUser,showAllUsers,loginUser} = require("./controllers/usersController");
+const {
+  registerUser,
+  showAllUsers,
+  loginUser,
+  findSingleUser
+} = require("./controllers/usersController");
+
 const app = express();
 app.use(express.json());
 
-app.get("/", auth, showAllUsers);
+app.get("/",  showAllUsers);
+app.get('/me',auth, findSingleUser);
 app.post("/register", registerUser);
-app.post('/login', loginUser);
+app.post("/login", loginUser);
+
+
+
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {

@@ -3,7 +3,9 @@ var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 
 const showAllUsers = (req, res) => {
-  const sql = "SELECT * FROM users ";
+  const sql = `SELECT
+                     *
+              FROM users `;
   db.query(sql, (err, result) => {
     if (err) throw err;
     if (result.length === 0) {
@@ -28,16 +30,17 @@ const registerUser = async (req, res) => {
     db.query(sql, user_data, (err, result) => {
       if (err) throw err;
 
-      const user_data_query = "INSERT INTO users_data SET?";
+      const user_data_query = `INSERT INTO users_data SET?`;
       const user_id = { user_id: result.insertId };
 
       db.query(user_data_query, user_id, (err, user_data_res) => {
         if (err) throw err;
       });
-      const address_query = "INSERT INTO addresses SET?";
+      const address_query = `INSERT INTO addresses SET?`;
       db.query(address_query, user_id, (err, addresses_res) => {
         if (err) throw err;
       });
+
       console.log(result.insertId);
       const token = jwt.sign({ id: result.insertId }, process.env.JWT_SECRET);
       res.send(token);
@@ -49,7 +52,10 @@ const registerUser = async (req, res) => {
 
 const loginUser = (req, res) => {
   try {
-    const sql = `SELECT * FROM users WHERE email = ? `;
+    const sql = `SELECT
+                       *
+                  FROM users
+                  WHERE email = ? `;
     const user = req.body.email;
 
     const query = db.query(sql, user, async (err, result) => {
@@ -80,4 +86,20 @@ const loginUser = (req, res) => {
   }
 };
 
-module.exports = { registerUser, showAllUsers, loginUser };
+const findSingleUser = (req, res) => {
+  const sql = `SELECT
+                *
+              FROM users
+              JOIN users_data
+                ON users.id = users_data.user_id
+              JOIN addresses
+                ON users.id = addresses.user_id
+              WHERE users.id = ?`;
+  const user = req.body.user.id;
+  db.query(sql, user, (err, result) => {
+    if (err) throw err;
+    res.send(result);
+  });
+};
+
+module.exports = { registerUser, showAllUsers, loginUser, findSingleUser };
