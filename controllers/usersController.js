@@ -2,18 +2,23 @@ const db = require("../db/db_config");
 var bcrypt = require("bcryptjs");
 var jwt = require("jsonwebtoken");
 
-const showAllUsers = (req, res) => {
-  const sql = `SELECT
-                     *
-              FROM users `;
-  db.query(sql, (err, result) => {
-    if (err) throw err;
-    if (result.length === 0) {
-      res.send("no user found");
-    } else {
-      res.send(result);
-    }
-  });
+const showAllUsers =async (req, res) => {
+  try {
+    const sql = `SELECT
+    *
+FROM users `;
+db.query(sql, (err, result) => {
+if (err) throw err;
+if (result.length === 0) {
+res.send("no user found");
+} else {
+res.status(200).send(result);
+}
+});
+  } catch (error) {
+    res.status(500).send({'error':error})
+  }
+
 };
 
 const registerUser = async (req, res) => {
@@ -43,14 +48,14 @@ const registerUser = async (req, res) => {
 
       console.log(result.insertId);
       const token = jwt.sign({ id: result.insertId }, process.env.JWT_SECRET);
-      res.send(token);
+      res.status(200).send(token);
     });
   } catch (error) {
     res.status(500).send(`server error: ${error}`);
   }
 };
 
-const loginUser = (req, res) => {
+const loginUser =async (req, res) => {
   try {
     const sql = `SELECT
                        *
@@ -77,7 +82,7 @@ const loginUser = (req, res) => {
             { id: result[0].id, email: result[0].email },
             process.env.JWT_SECRET
           );
-          res.send(token);
+          res.status(200).send(token);
         }
       }
     });
@@ -86,20 +91,27 @@ const loginUser = (req, res) => {
   }
 };
 
-const findSingleUser = (req, res) => {
-  const sql = `SELECT
-                *
-              FROM users
-              JOIN users_data
-                ON users.id = users_data.user_id
-              JOIN addresses
-                ON users.id = addresses.user_id
-              WHERE users.id = ?`;
-  const user = req.body.user.id;
-  db.query(sql, user, (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
+const findSingleUser =async (req, res) => {
+  try {
+    const sql = `SELECT
+    *
+  FROM users
+  JOIN users_data
+    ON users.id = users_data.user_id
+  JOIN addresses
+    ON users.id = addresses.user_id
+  WHERE users.id = ?`;
+const user = req.body.user.id;
+db.query(sql, user, (err, result) => {
+if (err) throw err;
+res.status(200).send(result);
+});
+  } catch (error) {
+    res.status(500).send({'server error':error})
+  }
+
 };
 
-module.exports = { registerUser, showAllUsers, loginUser, findSingleUser };
+
+
+module.exports = { registerUser, showAllUsers, loginUser, findSingleUser};

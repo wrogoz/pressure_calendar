@@ -5,13 +5,14 @@ const {
     registerUser,
     showAllUsers,
     loginUser,
-    findSingleUser
+    findSingleUser,
+    getMedicalData
   } = require("../controllers/usersController");
-  router.get("/",  showAllUsers);
+
+router.get("/", showAllUsers);
 router.get('/me',auth, findSingleUser);
-router.get('/getMedicalData', (req, res) => {
-  res.send('get medical data route')
-});
+
+
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 
