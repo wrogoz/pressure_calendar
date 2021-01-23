@@ -111,6 +111,20 @@ res.status(200).send(result);
 
 };
 
+const deleteUser = async(req,res)=>{
+  try {
 
 
-module.exports = { registerUser, showAllUsers, loginUser, findSingleUser};
+    const sql = `DELETE from users
+                WHERE id=?`
+                db.query(sql,req.body.user.id,(err,result)=>{
+                  if(err)throw err;
+                  res.status(200).send({status:"user deleted"})
+                })
+
+  } catch (error) {
+    res.status(500).send(error)
+  }
+}
+
+module.exports = { registerUser, showAllUsers, loginUser, findSingleUser,deleteUser};
