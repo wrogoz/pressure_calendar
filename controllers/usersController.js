@@ -35,7 +35,7 @@ const registerUser = async (req, res) => {
     db.query(sql, user_data, (err, result) => {
       if (err) throw err;
 
-      const user_data_query = `INSERT INTO users_data SET?`;
+      const user_data_query = `INSERT INTO users_info SET?`;
       const user_id = { user_id: result.insertId };
 
       db.query(user_data_query, user_id, (err, user_data_res) => {
@@ -46,7 +46,6 @@ const registerUser = async (req, res) => {
         if (err) throw err;
       });
 
-      console.log(result.insertId);
       const token = jwt.sign({ id: result.insertId }, process.env.JWT_SECRET);
       res.status(200).send(token);
     });
@@ -76,7 +75,7 @@ const loginUser =async (req, res) => {
           });
 
         if (!checkPassword) {
-          res.send("invalid password");
+          res.send("invalid user or password");
         } else {
           const token = jwt.sign(
             { id: result[0].id, email: result[0].email },
@@ -96,8 +95,8 @@ const findSingleUser =async (req, res) => {
     const sql = `SELECT
     *
   FROM users
-  JOIN users_data
-    ON users.id = users_data.user_id
+  JOIN users_info
+    ON users.id = users_info.user_id
   JOIN addresses
     ON users.id = addresses.user_id
   WHERE users.id = ?`;
