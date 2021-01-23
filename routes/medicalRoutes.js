@@ -2,11 +2,13 @@ const express = require('express')
 const router = express.Router()
 const auth = require("../middlewares/auth");
 const {
-
-    getUserData
+    addData,
+    getData,
+    deleteData
   } = require("../controllers/medicalDataController");
 
 
-  router.get('/getUserData',auth, getUserData);
-
+  router.get('/getData',auth, getData);
+  router.post('/addData',auth,addData)
+  router.delete('/deleteData',auth,deleteData)
   module.exports=router
