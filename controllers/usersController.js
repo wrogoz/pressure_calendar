@@ -62,12 +62,12 @@ const loginUser =async (req, res) => {
                   WHERE email = ? `;
     const user = req.body.email;
 
-    const query = db.query(sql, user, async (err, result) => {
+    db.query(sql, user, async (err, result) => {
       if (err) throw err;
       if (result.length === 0) {
         res.send("user not found");
       } else {
-        console.log(result);
+
         const checkPassword = await bcrypt
           .compare(req.body.password, result[0].user_password)
           .then((res) => {
