@@ -11,6 +11,9 @@ app.use('/',userRoute)
 app.use('/medical',medicalDataRoute)
 app.use('/address',addressRoute)
 app.use('/userInfo',userInfoRoute)
+app.get('/*', (req, res) => {
+  res.send('404 page')
+});
 const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
